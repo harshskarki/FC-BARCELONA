@@ -1,1 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FC Barcelona — Club Hub</title>
+  <meta name="description" content="A detailed single-page site about FC Barcelona with interactive sections, built using only HTML, CSS and JS." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b0b12;       /* dark base */
+      --panel:#121226;    /* panels */
+      --text:#e7e8ee;     /* text */
+      --muted:#a9acc7;    /* secondary */
+      --card:#151536;     /* cards */
+      --accent:#a50044;   /* Barça garnet */
+      --accent-2:#004d98; /* Barça blue */
+      --gold:#FDB913;     /* accent gold */
+      --ok:#22c55e;
+      --danger:#ef4444;
+      --shadow: 0 10px 24px rgba(0,0,0,.25);
+    }
+    :root.light{
+      --bg:#f7f7fb;
+      --panel:#ffffff;
+      --text:#14151f;
+      --muted:#4b4f67;
+      --card:#ffffff;
+      --shadow: 0 12px 24px rgba(2,6,23,.08);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial, sans-serif; background:linear-gradient(180deg, var(--bg) 0%, #0b0b18 100%); color:var(--text);
+    }
+    a{color:inherit; text-decoration:none}
+    img{max-width:100%; display:block}
+    .container{max-width:1100px; margin:0 auto; padding:0 18px}
+
+    /* Navbar */
+    .nav{position:sticky; top:0; z-index:50; background:linear-gradient(90deg,var(--panel),#0f0f24 60%, var(--panel)); border-bottom:1px solid rgba(255,255,255,.06);}
+    .nav-inner{display:flex; align-items:center; gap:12px; justify-content:space-between; padding:10px 0}
+    .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.3px}
+    .badge{width:30px; height:30px; border-radius:50%; background:conic-gradient(from 90deg,var(--accent),var(--accent-2)); display:grid; place-items:center; box-shadow:0 4px 14px rgba(0,0,0,.25)}
+    .badge span{font-size:14px; font-weight:900}
+    .nav a.btn{padding:10px 14px; border-radius:12px; background:linear-gradient(135deg, var(--accent), var(--accent-2)); border:1px solid rgba(255,255,255,.08); font-weight:600}
+    .nav-links{display:flex; gap:10px; flex-wrap:wrap}
+    .nav-links a{padding:8px 10px; border-radius:10px; transition:.2s background}
+    .nav-links a:hover{background:rgba(255,255,255,.06)}
+    .toggle{border:1px solid rgba(255,255,255,.14); background:var(--panel); padding:8px 12px; border-radius:12px; cursor:pointer}
+
+    /* Hero */
+    .hero{position:relative; overflow:hidden; background:
+      radial-gradient(1000px 400px at -10% -20%, rgba(165,0,68,.25), transparent 60%),
+      radial-gradient(900px 400px at 110% 120%, rgba(0,77,152,.25), transparent 60%);
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .hero .container{display:grid; grid-template-columns:1.3fr .7fr; gap:32px; padding:34px 18px 28px}
+    .hero h1{font-size:clamp(28px,5vw,44px); line-height:1.04; margin:0}
+    .hero p{color:var(--muted); margin:10px 0 18px}
+    .hero .stat-row{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:14px}
+    .stat{background:var(--card); border:1px solid rgba(255,255,255,.06); border-radius:16px; padding:14px 12px; text-align:center; box-shadow:var(--shadow)}
+    .stat .n{font-weight:800; font-size:22px}
+    .hero .crest{align-self:center; justify-self:end; aspect-ratio:1/1; width:220px; border-radius:24px; background:linear-gradient(135deg, rgba(165,0,68,.9), rgba(0,77,152,.9)); display:grid; place-items:center; box-shadow:var(--shadow); border:1px solid rgba(255,255,255,.08)}
+    .crest span{font-size:60px; font-weight:900; color:#fff; text-shadow:0 3px 20px rgba(0,0,0,.35)}
+
+    /* Section */
+    section{scroll-margin-top:70px}
+    .section{padding:32px 0}
+    .section h2{margin:0 0 14px; font-size:clamp(22px,3.6vw,30px)}
+    .muted{color:var(--muted)}
+
+    /* Cards grid */
+    .grid{display:grid; gap:16px}
+    .grid-3{grid-template-columns:repeat(3,1fr)}
+    .grid-2{grid-template-columns:repeat(2,1fr)}
+    @media (max-width:900px){
+      .hero .container{grid-template-columns:1fr}
+      .hero .crest{justify-self:start; width:160px}
+      .grid-3{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width:640px){
+      .grid-3,.grid-2{grid-template-columns:1fr}
+    }
+
+    .card{background:var(--card); border:1px solid rgba(255,255,255,.06); border-radius:18px; padding:16px; box-shadow:var(--shadow)}
+    .card h3{margin:0 0 6px}
+
+    /* Tabs */
+    .tabs{display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 16px}
+    .tab{padding:8px 12px; border:1px solid rgba(255,255,255,.1); background:var(--panel); border-radius:12px; cursor:pointer}
+    .tab.active{outline:2px solid var(--gold)}
+
+    /* Timeline */
+    .timeline{position:relative; padding-left:14px}
+    .timeline::before{content:""; position:absolute; left:6px; top:0; bottom:0; width:2px; background:linear-gradient(180deg,var(--accent),transparent)}
+    .tl-item{margin:12px 0 0 0; padding-left:12px}
+    .tl-year{font-weight:800; color:var(--gold)}
+
+    /* Legends */
+    .legend{display:flex; align-items:center; gap:12px}
+    .avatar{width:48px; height:48px; border-radius:50%; background:linear-gradient(135deg, var(--accent), var(--accent-2)); display:grid; place-items:center; font-weight:800}
+
+    /* Table */
+    table{width:100%; border-collapse:collapse; overflow:hidden; border-radius:14px}
+    th,td{padding:12px 10px; border-bottom:1px dashed rgba(255,255,255,.08)}
+    th{text-align:left; background:rgba(255,255,255,.04)}
+
+    /* Footer */
+    .footer{padding:30px 0; border-top:1px solid rgba(255,255,255,.06); color:var(--muted)}
+
+    /* Back to top */
+    .to-top{position:fixed; right:18px; bottom:18px; padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.12); background:var(--panel); display:none}
+
+    /* Simple bar chart */
+    .bars{display:grid; grid-template-columns:repeat(6,1fr); gap:10px; align-items:end; height:180px; padding:10px; background:linear-gradient(180deg, rgba(255,255,255,.04), transparent 40%); border:1px solid rgba(255,255,255,.06); border-radius:14px}
+    .bar{display:grid; place-items:end center; border-radius:10px 10px 0 0; background:linear-gradient(180deg, var(--accent), var(--accent-2)); box-shadow:0 10px 20px rgba(0,0,0,.25)}
+    .bar label{font-size:12px; color:#fff; padding:4px}
+
+    /* Search input */
+    .search{display:flex; gap:10px}
+    .search input{flex:1; padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.14); background:var(--panel); color:var(--text)}
+    .search button{padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.14); background:var(--panel); color:var(--text); cursor:pointer}
+
+    .note{font-size:12px; color:var(--muted)}
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <nav class="nav" aria-label="Primary">
+    <div class="container nav-inner">
+      <div class="brand">
+        <div class="badge" aria-hidden="true"><span>FCB</span></div>
+        <div>
+          <div>FC Barcelona</div>
+          <small class="muted">Més que un club</small>
+        </div>
+      </div>
+      <div class="nav-links" role="menubar">
+        <a href="#about" role="menuitem">About</a>
+        <a href="#honours" role="menuitem">Honours</a>
+        <a href="#legends" role="menuitem">Legends</a>
+        <a href="#stadium" role="menuitem">Stadium</a>
+        <a href="#squad" role="menuitem">Squad</a>
+        <a href="#fixtures" role="menuitem">Fixtures</a>
+      </div>
+      <button id="themeToggle" class="toggle" aria-pressed="false" title="Toggle theme">🌙</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="container">
+      <div>
+        <h1>FC Barcelona — Club Hub</h1>
+        <p>Founded in 1899, FC Barcelona is one of the most successful and influential football clubs in history — renowned for its La Masia academy and a possession-based philosophy often referred to as <em>tiki-taka</em>.</p>
+        <div class="stat-row" id="heroStats" aria-live="polite"></div>
+        <p class="note">Note: Trophy counts are approximate, Please connect to the web page admin for any further updates.</p>
+      </div>
+      <div class="crest" aria-hidden="true"><span>🔵🟥</span></div>
+    </div>
+  </header>
+
+  <!-- ABOUT -->
+  <section id="about" class="section">
+    <div class="container grid grid-2">
+      <article class="card">
+        <h2>About the Club</h2>
+        <p>Full name: <strong>Futbol Club Barcelona</strong>. Nicknames: <em>Barça</em>, <em>Blaugrana</em>. Motto: <em>Més que un club</em> (More than a club). Home city: Barcelona, Catalonia, Spain. Traditional colors: blue and garnet.</p>
+        <div class="timeline" id="timeline">
+          <div class="tl-item"><span class="tl-year">1899</span> — Club founded by Joan Gamper and a group of footballers.</div>
+          <div class="tl-item"><span class="tl-year">1979</span> — La Masia academy established.</div>
+          <div class="tl-item"><span class="tl-year">1992</span> — First European Cup (Wembley) under Johan Cruyff.</div>
+          <div class="tl-item"><span class="tl-year">2009</span> — Historic sextuple under Pep Guardiola.</div>
+          <div class="tl-item"><span class="tl-year">2015</span> — Fifth Champions League (Berlin).</div>
+        </div>
+      </article>
+      <aside class="card">
+        <h2>Identity & Philosophy</h2>
+        <ul>
+          <li>Member-owned club with strong Catalan identity.</li>
+          <li>Emphasis on youth development via <strong>La Masia</strong>.</li>
+          <li>Positional play, pressing, and controlled possession.</li>
+          <li>Iconic rivalries: <em>El Clásico</em> vs Real Madrid; <em>Derbi barceloní</em> vs Espanyol.</li>
+        </ul>
+        <p class="muted">Tip: For any additional information, please contact the page owner.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- HONOURS -->
+  <section id="honours" class="section">
+    <div class="container">
+      <h2>Major Honours</h2>
+      <div class="tabs" id="honourTabs" role="tablist" aria-label="Honours tabs"></div>
+      <div id="honourPanel" class="grid grid-3" role="region" aria-live="polite"></div>
+      <div class="card" style="margin-top:14px">
+        <h3>Trophies Snapshot</h3>
+        <div class="bars" id="bars" aria-label="Bar chart of selected trophies"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEGENDS -->
+  <section id="legends" class="section">
+    <div class="container">
+      <h2>Club Legends</h2>
+      <div class="search">
+        <input id="legendSearch" type="search" placeholder="Search legends by name or role…" aria-label="Search legends">
+        <button id="legendClear">Clear</button>
+      </div>
+      <div class="grid grid-3" id="legendGrid" style="margin-top:12px"></div>
+    </div>
+  </section>
+
+  <!-- STADIUM -->
+  <section id="stadium" class="section">
+    <div class="container grid grid-2">
+      <div class="card">
+        <h2>Stadium</h2>
+        <p><strong>Spotify Camp Nou</strong> (temporarily playing at Estadi Olímpic Lluís Companys during renovation). When complete, the remodeled stadium will feature an expanded capacity with modern facilities.</p>
+        <table id="stadiumTable" aria-label="Stadium facts"></table>
+      </div>
+      <div class="card">
+        <h2>Location</h2>
+        <p class="muted">(Static map placeholder — swap with an embedded map if desired.)</p>
+        <div style="height:260px; border-radius:14px; overflow:hidden; background:linear-gradient(135deg, var(--accent), var(--accent-2)); display:grid; place-items:center">
+          <div style="text-align:center">
+            <div style="font-size:40px">🗺️</div>
+            <div>Barcelona, Catalonia, Spain</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SQUAD -->
+  <section id="squad" class="section">
+    <div class="container">
+      <h2>Current Squad (Sample)</h2>
+      <div class="tabs" id="posTabs"></div>
+      <div class="grid grid-3" id="squadGrid"></div>
+      <p class="note">Updated Squad till Aug 2025</p>
+    </div>
+  </section>
+
+  <!-- FIXTURES -->
+  <section id="fixtures" class="section">
+    <div class="container">
+      <h2>Upcoming Fixtures (Sample)</h2>
+      <table id="fixtureTable"></table>
+      <p class="note">Fixtures here are demo entries to show interactivity.</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      Made by Harshvardhan Singh Karki 🤵🕉️🙏
+    </div>
+  </footer>
+
+  <button class="to-top" id="toTop" aria-label="Back to top">↑ Top</button>
+
+  <script>
+    // ======= DATA (Edit me) =======
+    const data = {
+      honours: {
+        "Domestic": [
+          { name:"La Liga", count:28, note:"League titles" },
+          { name:"Copa del Rey", count:32, note:"Spanish cup" },
+          { name:"Supercopa de España", count:15, note:"Spanish Super Cup" }
+        ],
+        "European": [
+          { name:"UEFA Champions League", count:5, note:"European Cup / UCL" },
+          { name:"UEFA Cup Winners' Cup", count:4, note:"Historic competition" },
+          { name:"UEFA Super Cup", count:5, note:"European Super Cup" }
+        ],
+        "Worldwide": [
+          { name:"FIFA Club World Cup", count:3, note:"World title" },
+          { name:"Inter-Cities Fairs Cup", count:3, note:"Predecessor to UEFA competitions" }
+        ]
+      },
+      legends: [
+        { name:"Lionel Messi", role:"Forward", years:"2004–2021", fact:"Record scorer; 8 Ballon d'Or (overall)." },
+        { name:"Johan Cruyff", role:"Forward/Coach", years:"1973–1978; 1988–1996", fact:"Dream Team architect; total football icon." },
+        { name:"Xavi Hernández", role:"Midfielder/Coach", years:"1998–2015; coach 2021–2024", fact:"Midfield metronome; later manager." },
+        { name:"Andrés Iniesta", role:"Midfielder", years:"2002–2018", fact:"Silky playmaker; scored 2009 UCL semi final winner." },
+        { name:"Carles Puyol", role:"Defender", years:"1999–2014", fact:"Legendary captain and leader." },
+        { name:"Ronaldinho", role:"Forward", years:"2003–2008", fact:"Sparked Barça's revival in mid‑2000s." },
+        { name:"Sergio Busquets", role:"Midfielder", years:"2008–2023", fact:"Positional master at pivot." },
+        { name:"Dani Alves", role:"Right-back", years:"2008–2016; 2021–2022", fact:"One of the most decorated players." },
+        { name:"Gerard Piqué", role:"Defender", years:"2008–2022", fact:"Ball‑playing centre‑back; multiple UCLs." }
+      ],
+      stadium: {
+        name:"Spotify Camp Nou",
+        opened:1957,
+        capacity:"> 99,000 (pre‑renovation)",
+        architect:"Francesc Mitjans et al.",
+        training:"Ciutat Esportiva Joan Gamper",
+        tempHome:"Estadi Olímpic Lluís Companys (during renovation)"
+      },
+      squad: [
+        // Goalkeeper
+        { name:"Marc‑André ter Stegen", number:0, position:"Goalkeeper", },
+        { name:"Iñaki Peña", number:1, position:"Goalkeeper" },
+        { name:"Joan García", number:13, position:"Goalkeeper" },
+        // Defender
+        { name:"Ronald Araújo", number:4, position:"Defender" },
+        { name:"Jules Koundé", number:23, position:"Defender" },
+        { name:"Alejandro Balde", number:3, position:"Defender" },
+        { name:"Pau Cubarsí", number:33, position:"Defender" },
+        { name:"Andreas Christensen", number:15, position:"Defender" },
+        { name:"Eric Garcia", number:24, position:"Defender" },
+        // Midfilder
+        { name:"Frenkie de Jong", number:21, position:"Midfielder" },
+        { name:"Gavi", number:6, position:"Midfielder" },
+        { name:"Pedri", number:8, position:"Midfielder" },
+        { name:"Fermín López", number:32, position:"Midfielder" },
+        { name:"Dani Olmo", number:20, position:"Midfielder" },
+        { name:"Marc Casadó", number:17, position:"Midfielder" },
+        // Forward
+        { name:"Robert Lewandowski", number:9, position:"Forward" },
+        { name:"Lamine Yamal", number:27, position:"Forward" },
+        { name:"Raphinha", number:11, position:"Forward" }
+       
+      ],
+      fixtures: [
+        { date:"2025-09-12", comp:"La Liga", opponent:"Sevilla", venue:"Home", note:"Sample" },
+        { date:"2025-09-18", comp:"UCL", opponent:"Bayern", venue:"Away", note:"Sample" },
+        { date:"2025-09-22", comp:"La Liga", opponent:"Valencia", venue:"Away", note:"Sample" }
+      ]
+    };
+
+    // ======= UTIL =======
+    const $ = (s, el=document) => el.querySelector(s);
+    const $$ = (s, el=document) => Array.from(el.querySelectorAll(s));
+
+    // Theme toggle
+    const toggleBtn = document.getElementById('themeToggle');
+    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+    const savedTheme = localStorage.getItem('theme');
+    if(savedTheme === 'light' || (!savedTheme && prefersLight)) document.documentElement.classList.add('light');
+    toggleBtn.addEventListener('click', () => {
+      const isLight = document.documentElement.classList.toggle('light');
+      toggleBtn.setAttribute('aria-pressed', String(isLight));
+      toggleBtn.textContent = isLight ? '☀️' : '🌙';
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    });
+
+    // Back to top
+    const toTop = document.getElementById('toTop');
+    window.addEventListener('scroll', () => {
+      toTop.style.display = window.scrollY > 400 ? 'inline-block' : 'none';
+    });
+    toTop.addEventListener('click', () => window.scrollTo({ top:0, behavior:'smooth' }));
+
+    // HERO stats
+    const heroStats = document.getElementById('heroStats');
+    const heroItems = [
+      { label:'Founded', value:'1899' },
+      { label:'Stadium', value:'Camp Nou' },
+      { label:'La Liga', value:data.honours.Domestic.find(h=>h.name==='La Liga').count },
+      { label:'UCL', value:data.honours.European.find(h=>h.name.includes('Champions')).count }
+    ];
+    heroStats.innerHTML = heroItems.map(({label,value}) => `
+      <div class="stat" role="group" aria-label="${label}">
+        <div class="n">${value}</div>
+        <div class="muted">${label}</div>
+      </div>`).join('');
+
+    // HONOURS tabs & cards
+    const honourTabs = document.getElementById('honourTabs');
+    const honourPanel = document.getElementById('honourPanel');
+    const groups = Object.keys(data.honours);
+    let activeGroup = groups[0];
+
+    function renderHonourTabs(){
+      honourTabs.innerHTML = groups.map(g => `<button class="tab ${g===activeGroup?'active':''}" data-key="${g}" role="tab" aria-selected="${g===activeGroup}">${g}</button>`).join('');
+      $$('.tab', honourTabs).forEach(btn => btn.addEventListener('click', () => { activeGroup = btn.dataset.key; renderHonourTabs(); renderHonourPanel(); renderBars(); }));
+    }
+    function renderHonourPanel(){
+      honourPanel.innerHTML = data.honours[activeGroup].map(item => `
+        <article class="card">
+          <h3>${item.name}</h3>
+          <div class="muted">${item.note||''}</div>
+          <div class="stat" style="margin-top:10px">
+            <div class="n">${item.count}</div>
+            <div class="muted">titles</div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    // Simple bar chart based on the first group's first 6 items (or fewer)
+    const bars = document.getElementById('bars');
+    function renderBars(){
+      const entries = data.honours[activeGroup].slice(0,6);
+      const max = Math.max(...entries.map(e=>e.count));
+      bars.innerHTML = entries.map(e => {
+        const h = (e.count / max) * 100; 
+        return `<div class="bar" style="height:${Math.max(h,8)}%"><label title="${e.name}">${e.count}</label></div>`;
+      }).join('');
+    }
+
+    renderHonourTabs();
+    renderHonourPanel();
+    renderBars();
+
+    // LEGENDS search
+    const legendGrid = document.getElementById('legendGrid');
+    const legendSearch = document.getElementById('legendSearch');
+    const legendClear = document.getElementById('legendClear');
+
+    function renderLegends(filter=''){
+      const q = filter.trim().toLowerCase();
+      const items = data.legends.filter(l => `${l.name} ${l.role}`.toLowerCase().includes(q));
+      legendGrid.innerHTML = items.map(l => `
+        <article class="card legend" tabindex="0" aria-label="${l.name}, ${l.role}">
+          <div class="avatar" aria-hidden="true">${l.name.split(' ').map(p=>p[0]).slice(0,2).join('')}</div>
+          <div>
+            <h3>${l.name}</h3>
+            <div class="muted">${l.role} • ${l.years}</div>
+            <div>${l.fact}</div>
+          </div>
+        </article>`).join('');
+    }
+    renderLegends();
+    legendSearch.addEventListener('input', e => renderLegends(e.target.value));
+    legendClear.addEventListener('click', () => { legendSearch.value=''; renderLegends(''); legendSearch.focus(); });
+
+    // STADIUM table
+    const sTable = document.getElementById('stadiumTable');
+    const s = data.stadium;
+    sTable.innerHTML = `
+      <tr><th>Stadium</th><td>${s.name}</td></tr>
+      <tr><th>Opened</th><td>${s.opened}</td></tr>
+      <tr><th>Capacity</th><td>${s.capacity}</td></tr>
+      <tr><th>Architect</th><td>${s.architect}</td></tr>
+      <tr><th>Training center</th><td>${s.training}</td></tr>
+      <tr><th>Temporary home</th><td>${s.tempHome}</td></tr>
+    `;
+
+    // SQUAD filter by position
+    const posTabs = document.getElementById('posTabs');
+    const squadGrid = document.getElementById('squadGrid');
+    const positions = ['All', ...Array.from(new Set(data.squad.map(p=>p.position)))];
+    let activePos = 'All';
+
+    function renderPosTabs(){
+      posTabs.innerHTML = positions.map(p => `<button class="tab ${p===activePos?'active':''}" data-pos="${p}">${p}</button>`).join('');
+      $$('.tab', posTabs).forEach(btn => btn.addEventListener('click', () => { activePos = btn.dataset.pos; renderSquad(); renderPosTabs(); }));
+    }
+    function renderSquad(){
+      const players = data.squad.filter(pl => activePos==='All' || pl.position===activePos);
+      squadGrid.innerHTML = players.map(pl => `
+        <article class="card">
+          <div class="legend">
+            <div class="avatar">${(pl.name.split(' ').map(p=>p[0]).slice(0,2).join(''))}</div>
+            <div>
+              <h3>#${pl.number} — ${pl.name}</h3>
+              <div class="muted">${pl.position}</div>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    }
+    renderPosTabs();
+    renderSquad();
+
+    // FIXTURES with simple sorting by date
+    const fixtureTable = document.getElementById('fixtureTable');
+    function renderFixtures(){
+      const rows = [...data.fixtures].sort((a,b)=>a.date.localeCompare(b.date));
+      fixtureTable.innerHTML = `
+        <tr><th>Date</th><th>Competition</th><th>Opponent</th><th>Venue</th><th>Note</th></tr>
+        ${rows.map(r => `<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.comp}</td><td>${r.opponent}</td><td>${r.venue}</td><td>${r.note||''}</td></tr>`).join('')}
+      `;
+    }
+    renderFixtures();
+
+    // Keyboard focus for nav links smooth scroll
+    $$('.nav-links a').forEach(a => {
+      a.addEventListener('click', e => { e.preventDefault(); document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth'}); });
+    });
+  </script>
+</body>
+</html>
 
