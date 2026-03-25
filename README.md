@@ -29,7 +29,7 @@ It combines clean design, informative sections, and responsive UI to give users 
 ## 🧩 Tech Stack
 
 - **Frontend:** HTML, CSS, JavaScript  
-- **Deployment:** [Vercel](https://vercel.com/)  
+- **Deployment:** [Vercel](https://vercel.com/)
 - **Design:** Minimal and fan-centric static layout  
 
 ---
